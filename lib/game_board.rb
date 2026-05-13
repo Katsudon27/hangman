@@ -7,7 +7,7 @@ class GameBoard
   def initialize(answer)
     @guess = Array.new(answer.length, "_")
     @incorrect_guesses = []
-    @stick_figure = [" _______", "|", "|", "|", "|", "|"]
+    @stick_figure = []
   end
 
   def print_board
@@ -15,19 +15,18 @@ class GameBoard
     display_guess
     print "\n"
     display_incorrect_letters
-    display_stick_figure
+    puts @stick_figure
   end
 
-  def display_stick_figure
+  def update_stick_figure
     case @incorrect_guesses.length
     when 0
       return
     when 1
-      puts @stick_figure
-      return
+      @stick_figure = [" ________", "|", "|", "|", "|", "|"]
     when 2
-      @stick_figure[1] += "\t|"
-      @stick_figure[2] += "\tO"
+      @stick_figure[1] += "\t |"
+      @stick_figure[2] += "\t O"
     when 3
       @stick_figure[3] += "\t/"
     when 4
@@ -37,9 +36,8 @@ class GameBoard
     when 6
       @stick_figure[4] += "\t/"
     when 7
-      @stick_figure[4] += "\\"
+      @stick_figure[4] += " \\"
     end
-    puts @stick_figure
   end
 
   def display_guess
@@ -58,6 +56,7 @@ class GameBoard
 
   def add_incorrect_guess(letter)
     @incorrect_guesses << letter
+    update_stick_figure
   end
 
   def add_correct_guess(guess)
