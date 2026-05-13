@@ -2,10 +2,10 @@
 class Player
   def make_guess
     loop do
-      puts "Guess a letter in the secret word: "
+      puts "\nGuess a letter in the secret word: "
       input = gets.chomp.downcase
 
-      return input if ("a".."z").to_a.include?(input) && input.length == 1
+      return input if (input.chars - ("a".."z").to_a).empty?
 
       puts "Invalid input: Please try again"
     end
