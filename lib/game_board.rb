@@ -2,6 +2,8 @@ require "colorize"
 
 # A class that represents the game board for Hangman
 class GameBoard
+  attr_reader :incorrect_guesses, :guess
+
   def initialize(answer)
     @guess = Array.new(answer.length, "_")
     @incorrect_guesses = []
@@ -48,5 +50,17 @@ class GameBoard
   def display_incorrect_letters
     print "Incorrect letters: "
     puts @incorrect_guesses.join(" ")
+  end
+
+  def add_letter_guess(index, letter)
+    @guess[index] = letter
+  end
+
+  def add_incorrect_guess(letter)
+    @incorrect_guesses << letter
+  end
+
+  def add_correct_guess(guess)
+    @guess = guess.chars
   end
 end
