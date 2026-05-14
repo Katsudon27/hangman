@@ -5,7 +5,7 @@ class GameController
   attr_reader :answer
   def initialize
     @answer = File.readlines("dictionary.txt").select {|word| word.length >= 5 && word.length <= 12}.sample.chomp
-    @game_board = GameBoard.new(@answer)
+    @game_board = GameBoard.new(Array.new(@answer.length, "_"), [], [])
     @player = Player.new
   end
 
@@ -20,6 +20,8 @@ class GameController
           @game_board.add_letter_guess(index, letter)
         end
       end
+    elsif guess == "'s'"
+      save_game
     else
       unless guess == @answer
         @game_board.add_incorrect_guess(guess)
@@ -58,5 +60,19 @@ class GameController
         break
       end
     end
+  end
+
+  def to_yaml
+    YAML.dump ({
+      :answer => @answer,
+      :game_board => @game_board.to_yaml
+    })
+  end
+  
+  def save_game
+    File.open("player_save.yaml", "w") do |f|
+      f.write(to_yaml)
+    end
+    puts "Game successfully saved! You can quit the game now."
   end
 end
