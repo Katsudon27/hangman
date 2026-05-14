@@ -5,7 +5,7 @@ class Player
       puts "\nGuess a letter in the secret word: "
       input = gets.chomp.downcase
 
-      return input if (input.chars - ("a".."z").to_a).empty?
+      return input if (input.chars - ("a".."z").to_a).empty? && input.length >= 1
 
       puts "Invalid input: Please try again"
     end
