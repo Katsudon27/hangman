@@ -1,13 +1,14 @@
 require "colorize"
+require 'yaml'
 
 # A class that represents the game board for Hangman
 class GameBoard
   attr_reader :incorrect_guesses, :guess
 
-  def initialize(answer)
-    @guess = Array.new(answer.length, "_")
-    @incorrect_guesses = []
-    @stick_figure = []
+  def initialize(guess, incorrect_guesses, stick_figure)
+    @guess = guess
+    @incorrect_guesses = incorrect_guesses
+    @stick_figure = stick_figure
   end
 
   def print_board
@@ -61,5 +62,18 @@ class GameBoard
 
   def add_correct_guess(guess)
     @guess = guess.chars
+  end
+
+  def to_yaml
+    YAML.dump ({
+      :guess => @guess,
+      :incorrect_guesses => @incorrect_guesses,
+      :stick_figure => @stick_figure
+    })
+  end
+
+  def self.from_yaml(string)
+    data = YAML.load(string)
+    self.new(data[:guess], data[:incorrect_guesses], data[:stick_figure])
   end
 end
