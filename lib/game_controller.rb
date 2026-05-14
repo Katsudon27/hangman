@@ -1,10 +1,10 @@
 require_relative "game_board"
 require_relative "player"
 
+# A class that controls the core game loop and logic for Hangman
 class GameController
-  attr_reader :answer
   def initialize
-    @answer = File.readlines("dictionary.txt").select {|word| word.length >= 5 && word.length <= 12}.sample.chomp
+    @answer = File.readlines("dictionary.txt").select { |word| word.length.between?(5, 12) }.sample.chomp
     @game_board = GameBoard.new(Array.new(@answer.length, "_"), [], [])
     @player = Player.new
   end
@@ -16,9 +16,7 @@ class GameController
   def evaluate_guess(guess)
     if @answer.include?(guess) && guess.length == 1
       @answer.chars.each_with_index do |letter, index|
-        if letter == guess
-          @game_board.add_letter_guess(index, letter)
-        end
+        @game_board.add_letter_guess(index, letter) if letter == guess
       end
     elsif guess == "'s'"
       save_game
@@ -51,7 +49,7 @@ class GameController
       puts "Please choose 1 or 2 from the options provided: "
       input = gets.chomp
 
-      return input if input == "1" or input == "2"
+      return input if %w[1 2].include?(input)
 
       puts "Invalid input: Please try again"
     end
@@ -61,9 +59,7 @@ class GameController
     print_instructions
     player_selection = start_or_load_game
 
-    if player_selection == "2"
-      load_game  
-    end
+    load_game if player_selection == "2"
 
     loop do
       @game_board.print_board
@@ -84,29 +80,27 @@ class GameController
   end
 
   def to_yaml
-    YAML.dump ({
-      :answer => @answer,
-      :game_board => @game_board.to_yaml
-    })
+    YAML.dump({
+                answer: @answer,
+                game_board: @game_board.to_yaml
+              })
   end
 
   def from_yaml(string)
-    data = YAML.load(string)
+    data = YAML.safe_load(string)
     @answer = data[:answer]
     @game_board = GameBoard.from_yaml(data[:game_board])
   end
-  
+
   def save_game
-    File.open("player_save.yaml", "w") do |f|
-      f.write(to_yaml)
-    end
+    File.write("player_save.yaml", to_yaml)
     puts "Game successfully saved! You can quit the game now."
   end
 
   def load_game
     if File.exist?("player_save.yaml")
       from_yaml(File.read("player_save.yaml"))
-      puts "Your previous save from #{File.mtime("player_save.yaml")} has been successfully loaded. Good luck!"
+      puts "Your previous save from #{File.mtime('player_save.yaml')} has been successfully loaded. Good luck!"
     else
       puts "No previous save found. Starting a new game for you!"
     end

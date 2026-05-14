@@ -1,5 +1,5 @@
 require "colorize"
-require 'yaml'
+require "yaml"
 
 # A class that represents the game board for Hangman
 class GameBoard
@@ -22,7 +22,7 @@ class GameBoard
   def update_stick_figure
     case @incorrect_guesses.length
     when 0
-      return
+      nil
     when 1
       @stick_figure = [" ________", "|", "|", "|", "|", "|"]
     when 2
@@ -65,15 +65,15 @@ class GameBoard
   end
 
   def to_yaml
-    YAML.dump ({
-      :guess => @guess,
-      :incorrect_guesses => @incorrect_guesses,
-      :stick_figure => @stick_figure
-    })
+    YAML.dump({
+                guess: @guess,
+                incorrect_guesses: @incorrect_guesses,
+                stick_figure: @stick_figure
+              })
   end
 
   def self.from_yaml(string)
-    data = YAML.load(string)
-    self.new(data[:guess], data[:incorrect_guesses], data[:stick_figure])
+    data = YAML.safe_load(string)
+    new(data[:guess], data[:incorrect_guesses], data[:stick_figure])
   end
 end
