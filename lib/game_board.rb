@@ -73,7 +73,7 @@ class GameBoard
   end
 
   def self.from_yaml(string)
-    data = YAML.safe_load(string)
+    data = YAML.load(string)
     new(data[:guess], data[:incorrect_guesses], data[:stick_figure])
   end
 end

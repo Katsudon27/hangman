@@ -87,7 +87,7 @@ class GameController
   end
 
   def from_yaml(string)
-    data = YAML.safe_load(string)
+    data = YAML.load(string)
     @answer = data[:answer]
     @game_board = GameBoard.from_yaml(data[:game_board])
   end
@@ -98,6 +98,7 @@ class GameController
   end
 
   def load_game
+    # Only read files if there is an existing save file
     if File.exist?("player_save.yaml")
       from_yaml(File.read("player_save.yaml"))
       puts "Your previous save from #{File.mtime('player_save.yaml')} has been successfully loaded. Good luck!"
